@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:recl/constants.dart';
 import 'package:recl/screens/questionnaire.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'chat_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:recl/screens/todo_screen.dart';
+import '../lib/auth_provider.dart';
 // import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -71,24 +73,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(20)),
                 child: Text("Log In"),
                 color: Colors.lightBlueAccent,
-                // onPressed: () async {
-                //   setState(() {
-                //     showSpinner = true;
-                //   });
-                //   try {
-                //     final user = await _auth.signInWithEmailAndPassword(
-                //         email: email, password: password);
-                //     if (user != null) {
-                //       Navigator.pushNamed(context, ChatScreen.id);
-                //     }
-                //
-                //     setState(() {
-                //       showSpinner = false;
-                //     });
-                //   } catch (e) {
-                //     print(e);
-                //   }
-                // },
+                onPressed: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
+                  try {
+                    //final _auth = Provider.of<FirebaseAuth>(context, listen:false); // retrieve firebaseAuth from above in the widget tree
+                    //final _provider = Provider.of(context);
+                    final _auth = Provider.of<AuthProvider>(context);
+                    final user = await _auth.signInEmail(email, password);
+                    if (user != null) {
+                      //Navigator.pushNamed(context, QuestionnaireScreen.id); //provider가 다른 tree에 있다는 err(from outside of the widget tree.)
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TodoScreen(),
+                        ),
+                      );
+                    }
+
+                    setState(() {
+                      showSpinner = false;
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+                },
               ),
               FlatButton(
                   onPressed: () {

@@ -1,8 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:recl/screens/login.dart';
-import 'package:recl/screens/questiondetail_screen.dart';
-import 'package:recl/screens/questionnaire.dart';
-import 'package:recl/screens/todo_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:recl/lib/auth_provider.dart';
+import 'screens/login.dart';
+import 'screens/questiondetail_screen.dart';
+import 'screens/questionnaire.dart';
+import 'screens/registration.dart';
+import 'screens/todo_screen.dart';
+import 'widgets/landing_widget.dart';
+
+import 'lib/auth_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,16 +25,74 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: LoginScreen.id,
-      routes: {
-        LoginScreen.id: (context) => LoginScreen(),
-        /*QuestionnaireScreen.id: (context) => QuestionnaireScreen(),*/
-        QuestionnaireScreen.id: (context) => TodoScreen(),
-        QuestionDetailScreen.id: (context) => QuestionDetailScreen()
-      },
+      home: LandingPage(),
+      /*initialRoute:
+                      LandingPage.id, //RegistrationScreen.id, //LoginScreen.id,
+                  routes: {
+                    LandingPage.id: (context) => LandingPage(),
+                    RegistrationScreen.id: (context) => RegistrationScreen(),
+                    LoginScreen.id: (context) => LoginScreen(),
+                    */ /*QuestionnaireScreen.id: (context) => QuestionnaireScreen(),*/ /*
+                    */ /*QuestionnaireScreen.id: (context) => ExampleApp(),*/ /*
+                    QuestionnaireScreen.id: (context) => TodoScreen(),
+                    QuestionDetailScreen.id: (context) => QuestionDetailScreen()
+                  },*/
     );
   }
 }
+//2차 주석
+/*ChangeNotifierProvider<AuthProvider>(
+      create: (_) {
+        print('main ChangeNotifierProvider create 시작');
+        return new AuthProvider();
+      },
+      child: Consumer<AuthProvider>(
+        builder: (context, model, child) => MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          initialRoute:
+              LandingPage.id, //RegistrationScreen.id, //LoginScreen.id,
+          routes: {
+            LandingPage.id: (context) => LandingPage(),
+            RegistrationScreen.id: (context) => RegistrationScreen(),
+            LoginScreen.id: (context) => LoginScreen(),
+            */ /*QuestionnaireScreen.id: (context) => QuestionnaireScreen(),*/ /*
+            */ /*QuestionnaireScreen.id: (context) => ExampleApp(),*/ /*
+            QuestionnaireScreen.id: (context) => TodoScreen(),
+            QuestionDetailScreen.id: (context) => QuestionDetailScreen()
+          },
+        ),
+      ),
+    );*/
+
+//1차 주석
+/*MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initialRoute: LandingPage.id, //RegistrationScreen.id, //LoginScreen.id,
+        routes: {
+          LandingPage.id: (context) => LandingPage(),
+          RegistrationScreen.id: (context) => RegistrationScreen(),
+          LoginScreen.id: (context) => LoginScreen(),
+          */ /*QuestionnaireScreen.id: (context) => QuestionnaireScreen(),*/ /*
+          */ /*QuestionnaireScreen.id: (context) => ExampleApp(),*/ /*
+          QuestionnaireScreen.id: (context) => TodoScreen(),
+          QuestionDetailScreen.id: (context) => QuestionDetailScreen()
+        },
+      ),
+    );*/
 
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';

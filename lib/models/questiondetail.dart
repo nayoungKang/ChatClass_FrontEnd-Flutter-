@@ -6,13 +6,16 @@ class QuestionDetail {
   String questionId;
   String qContent;
   int category;
+  List rList;
   String rContent;
-// Flutter way of creating a constructor
+
   QuestionDetail(
+      // constructor
       {this.id = '',
       this.questionId = '',
       this.qContent = '',
       this.category,
+      this.rList,
       this.rContent});
 
 // factory for mapping JSON to current instance of the Todo class
@@ -22,6 +25,7 @@ class QuestionDetail {
         questionId: json['questionId'],
         qContent: json['qContent'],
         category: json['category'],
+        rList: json['rList'],
         rContent: json['rContent']);
   }
 
@@ -32,6 +36,7 @@ class QuestionDetail {
       "questionId": questionId,
       "qContent": qContent,
       "category": category,
+      "rList": rList,
       "rContent": rContent
     };
   }

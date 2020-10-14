@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/manage_todo_widget.dart';
 import '../models/question.dart';
 import '../services/api_service.dart';
 import '../screens/questiondetail_screen.dart';
 import '../screens/modules.dart';
+import '../lib/auth_provider.dart';
 
 class TodoScreen extends StatefulWidget {
   @override
@@ -21,13 +23,16 @@ class _TodoScreenState extends State<TodoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Alarm List"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openManageTodoSheet(null, context),
+            icon: Icon(Icons.exit_to_app), //Icon(Icons.add),
+            onPressed: () =>
+                authProvider.signOut(), //_openManageTodoSheet(null, context),
           ),
         ],
       ),
