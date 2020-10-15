@@ -1,113 +1,170 @@
 import 'package:flutter/material.dart';
-import 'package:recl/constants.dart';
-import 'package:recl/screens/questionnaire.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:recl/screens/todo_screen.dart';
-import '../lib/auth_provider.dart';
-// import 'package:modal_progress_hud/modal_progress_hud.dart';
+import '../lib/user_repository.dart';
+import 'todo_screen.dart';
+import 'registration.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const String id = 'login_screen';
+class LoginPage extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool showSpinner = false;
-  // final _auth = FirebaseAuth.instance;
-  String email;
-  String password;
+class _LoginPageState extends State<LoginPage> {
+  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  TextEditingController _email;
+  TextEditingController _password;
+  final _formKey = GlobalKey<FormState>();
+  final _key = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController(text: "");
+    _password = TextEditingController(text: "");
+  }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserRepository>(context, listen: false);
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        //ModalProgressHUD(
-        //inAsyncCall: showSpinner,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      key: _key,
+      appBar: AppBar(
+        title: Text("Demo"),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
             children: <Widget>[
-              // Flexible(
-              //   child: Hero(
-              //     tag: 'logo',
-              //     child: Container(
-              //       height: 200.0,
-              //       child: Image.asset('images/logo.png'),
-              //     ),
-              //   ),
-              // ),
-              SizedBox(
-                height: 48.0,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextFormField(
+                  controller: _email,
+                  validator: (value) =>
+                      (value.isEmpty) ? "Please Enter Email" : null,
+                  style: style,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
+                      labelText: "Email",
+                      border: OutlineInputBorder()),
+                ),
               ),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextFormField(
+                  controller: _password,
+                  validator: (value) =>
+                      (value.isEmpty) ? "Please Enter Password" : null,
+                  style: style,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock),
+                      labelText: "Password",
+                      border: OutlineInputBorder()),
+                ),
               ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                obscureText: true,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  password = value;
-                },
-                decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
-              ),
-              SizedBox(
-                height: 24.0,
-              ),
-              RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                child: Text("Log In"),
-                color: Colors.lightBlueAccent,
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  try {
-                    //final _auth = Provider.of<FirebaseAuth>(context, listen:false); // retrieve firebaseAuth from above in the widget tree
-                    //final _provider = Provider.of(context);
-                    final _auth = Provider.of<AuthProvider>(context);
-                    final user = await _auth.signInEmail(email, password);
-                    if (user != null) {
-                      //Navigator.pushNamed(context, QuestionnaireScreen.id); //provider가 다른 tree에 있다는 err(from outside of the widget tree.)
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => TodoScreen(),
+              user.status == Status.Authenticating
+                  ? Center(child: CircularProgressIndicator())
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: Colors.red,
+                        child: MaterialButton(
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              if (!await user.signIn(
+                                  _email.text, _password.text)) {
+                                _key.currentState.showSnackBar(SnackBar(
+                                  content: Text("Something is wrong"),
+                                ));
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => TodoScreen(),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: Text(
+                            "Sign In",
+                            style: style.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      );
-                    }
-
-                    setState(() {
-                      showSpinner = false;
-                    });
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-              ),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, QuestionnaireScreen.id);
-                  },
-                  child: Text('questionnaire'))
+                      ),
+                    ),
+              SizedBox(height: 20),
+              user.status == Status.Authenticating
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.only(top: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Need an account?",
+                              style: TextStyle(color: Colors.blueGrey)),
+                          FlatButton(
+                            child: Text(
+                              "Sign Up",
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 16),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RegistrationScreen()));
+                            },
+                          )
+                        ],
+                      ),
+                    )
+              /*
+              user.status == Status.Authenticating
+                  ? Center(child: CircularProgressIndicator())
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: Colors.red,
+                        child: MaterialButton(
+                          onPressed: () async {
+                            if (!await user.signInWithGoogle())
+                              _key.currentState.showSnackBar(SnackBar(
+                                content: Text("Something is wrong"),
+                              ));
+                          },
+                          child: Text(
+                            "Sign In With Google",
+                            style: style.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),*/
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
   }
 }

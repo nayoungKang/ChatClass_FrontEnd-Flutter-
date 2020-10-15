@@ -10,7 +10,13 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 class QuestionDetailScreen extends StatefulWidget {
+  const QuestionDetailScreen({
+    Key key,
+    this.parent_questionId,
+  }) : super(key: key);
+
   static const String id = 'question_detail_screen';
+  final String parent_questionId;
 
   @override
   _QuestionDetailScreenState createState() => _QuestionDetailScreenState();
@@ -41,13 +47,15 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
     //_dropdownMenuItems = buildDropDownMenuItems(_dropdownItems); //Dropdown init
     //String _selectedItem; // = _dropdownMenuItems[0].value;
 
-    Future.delayed(Duration.zero, () {
-      setState(() {
+    /*Future.delayed(Duration.zero, () {
+      */ /*setState(() {
         args = ModalRoute.of(context).settings.arguments;
-      });
-      //print(args['questionId']);
-      _questionDetails = _apiService.getQuestionDetails(args.questionId);
-    });
+      });*/ /*
+      //_questionDetails = _apiService.getQuestionDetails(args.questionId);
+
+      _questionDetails =
+          _apiService.getQuestionDetails(widget.parent_questionId);
+    });*/
   }
 
   @override
@@ -57,8 +65,8 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-          future:
-              _questionDetails, //_apiService.getQuestionDetails(args.questionId),
+          future: _apiService
+              .getQuestionDetails(widget.parent_questionId), //_questionDetails,
           builder: (BuildContext context,
               AsyncSnapshot<List<QuestionDetail>> snapshot) {
             if (snapshot.hasError) {

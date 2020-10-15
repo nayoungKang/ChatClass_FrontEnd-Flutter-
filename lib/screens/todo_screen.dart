@@ -6,6 +6,7 @@ import '../services/api_service.dart';
 import '../screens/questiondetail_screen.dart';
 import '../screens/modules.dart';
 import '../lib/auth_provider.dart';
+import '../lib/user_repository.dart';
 
 class TodoScreen extends StatefulWidget {
   @override
@@ -23,7 +24,8 @@ class _TodoScreenState extends State<TodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of(context, listen: true);
+    //AuthProvider authProvider = Provider.of(context, listen: true);
+    UserRepository user = Provider.of<UserRepository>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +34,7 @@ class _TodoScreenState extends State<TodoScreen> {
           IconButton(
             icon: Icon(Icons.exit_to_app), //Icon(Icons.add),
             onPressed: () =>
-                authProvider.signOut(), //_openManageTodoSheet(null, context),
+                user.signOut(), //_openManageTodoSheet(null, context),
           ),
         ],
       ),
@@ -82,10 +84,17 @@ class _TodoScreenState extends State<TodoScreen> {
               padding: const EdgeInsets.only(top: 8.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(
+                  /*Navigator.pushNamed(
                     context,
                     QuestionDetailScreen.id,
                     arguments: DetailScreenArguments(toDo.id),
+                  );*/
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => QuestionDetailScreen(
+                          parent_questionId:
+                              toDo.id), //QuestionDetailScreen(toDo.id),
+                    ),
                   );
                 },
                 child: Card(

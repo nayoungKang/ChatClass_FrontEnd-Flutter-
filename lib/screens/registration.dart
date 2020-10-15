@@ -112,11 +112,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                             if (newuser != null) {
                               print('firebase 결과 값 : ${newuser}');
-                              Navigator.push(
+                              /*Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => LoginScreen()),
-                              );
+                              );*/ //LoginPage -> LoginScreen으로 바꿀것
                               /*Navigator.pushNamed(context, LoginScreen.id);*/
                               setState(() {
                                 showProgress = false;
@@ -140,8 +140,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()),
+                          MaterialPageRoute(builder: (context) => LoginPage()),
                         );
                       },
                       child: Text(

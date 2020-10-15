@@ -13,17 +13,17 @@ class LandingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     print('LandingPage build 시작');
 
-    /*
-    authProvider = Provider.of(context, listen: false);Widget body;
+    authProvider = Provider.of(context, listen: false);
+    Widget body;
     if (authProvider != null) {
       print('${authProvider.toString()} / ${authProvider.user.toString()}');
       if (authProvider.isAuthenticated) {
         return TodoScreen();
       } else {
-        return LoginScreen();
+        return TodoScreen(); //LoginScreen();//LoginPage -> LoginScreen으로 바꿀것
       }
-    }*/
-    return FutureBuilder(
+    }
+    /* return FutureBuilder(
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -58,7 +58,7 @@ class LandingPage extends StatelessWidget {
             color: Colors.red,
             size: 60,
           );
-        });
+        });*/
   }
   /*Widget build(BuildContext context) {
     // retrieve firebaseAuth from above in the widget tree
